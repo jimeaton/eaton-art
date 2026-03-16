@@ -4,7 +4,7 @@ export const sanityClient = createClient({
   projectId: 'olr9n4p3',
   dataset:   'production',
   apiVersion: '2026-03-15',
-  useCdn:     true,
+  useCdn:     false,
 });
 
 // Helper to build Sanity image URLs
