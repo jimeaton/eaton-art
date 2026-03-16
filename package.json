@@ -1,0 +1,18 @@
+{
+  "name": "eatonart",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "generate-csv": "node scripts/generate-csv.mjs",
+    "import-paintings": "node scripts/import-paintings.mjs"
+  },
+  "dependencies": {
+    "@portabletext/to-html": "^2.0.0",
+    "@sanity/client": "^6.22.0",
+    "@sanity/image-url": "^1.1.0",
+    "astro": "^5.4.0"
+  }
+}

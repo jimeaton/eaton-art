@@ -1,0 +1,351 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { sanityClient } from '../lib/sanity';
+import imageUrlBuilder from '@sanity/image-url';
+
+const paintings = await sanityClient.fetch(`
+  *[_type == "painting"] | order(publishedAt desc) {
+    _id,
+    title,
+    image {
+      ...asset->{ metadata { dimensions { aspectRatio } } },
+      asset
+    },
+    altText,
+    medium,
+    dimensions,
+    price,
+    category
+  }
+`);
+
+const builder = imageUrlBuilder(sanityClient);
+function thumbUrl(image: any) {
+  return builder.image(image).width(600).auto('format').url();
+}
+function fullUrl(image: any) {
+  return builder.image(image).width(1600).auto('format').url();
+}
+---
+
+<Layout title="Gallery — Kathleen Eaton">
+  <Header currentPath="/gallery/" />
+
+  <div id="main">
+    <div class="wrap">
+      <div class="middle">
+
+        <div class="gallery-filters">
+          <button class="filter-btn" data-filter="sold" aria-pressed="true">Sold</button>
+          <button class="filter-btn" data-filter="urban-landscapes" aria-pressed="false">Urban Landscapes</button>
+          <button class="filter-btn" data-filter="suburbia" aria-pressed="false">Suburbia</button>
+          <button class="filter-btn" data-filter="posters" aria-pressed="false">Posters</button>
+          <button class="filter-btn" data-filter="all" aria-pressed="false">All</button>
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid">
+          {paintings.map((p: any) => (
+            <div
+              class="gallery-item"
+              data-category={p.category}
+              data-hidden={p.category !== 'sold' ? 'true' : undefined}
+              data-aspect={p.image?.metadata?.dimensions?.aspectRatio ?? 1}
+            >
+              <button
+                class="gallery-thumb-btn"
+                data-title={p.title}
+                data-medium={p.medium || ''}
+                data-dimensions={p.dimensions || ''}
+                data-price={p.price ? String(p.price) : ''}
+                data-full={fullUrl(p.image)}
+                data-alt={p.altText || p.title}
+                aria-label={`View ${p.title}`}
+              >
+                <img
+                  src={thumbUrl(p.image)}
+                  alt={p.altText || p.title}
+                  loading="lazy"
+                />
+              </button>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox modal -->
+  <div id="galleryModal" class="modal" role="dialog" aria-modal="true" aria-label="Painting detail" hidden>
+    <div class="modal-backdrop"></div>
+    <div class="modal-inner">
+      <button class="modal-close" aria-label="Close">&times;</button>
+      <img class="modal-img" src="" alt="" />
+      <div class="modal-caption">
+        <p class="modal-title"></p>
+        <p class="modal-meta"></p>
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</Layout>
+
+<script>
+  const GAP           = 30;
+  const TARGET_HEIGHT = 350;
+  const MIN_PER_ROW   = 2;
+  const MAX_PER_ROW   = 3;
+
+  const grid    = document.getElementById('galleryGrid') as HTMLElement;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items   = Array.from(document.querySelectorAll<HTMLElement>('.gallery-item'));
+
+  // ─── Justified layout ──────────────────────────────────────────────────────
+  function layout() {
+    const containerWidth = grid.offsetWidth;
+    const visible = items.filter(el => !el.dataset.hidden);
+
+    let row: HTMLElement[] = [];
+    let rowRatio = 0;
+
+    function finalizeRow(rowItems: HTMLElement[], isLast: boolean) {
+      const totalGaps  = (rowItems.length - 1) * GAP;
+      const idealWidth = rowRatio * TARGET_HEIGHT + totalGaps;
+      const height     = (!isLast || idealWidth > containerWidth * 0.6)
+        ? (containerWidth - totalGaps) / rowRatio
+        : TARGET_HEIGHT;
+      rowItems.forEach(item => {
+        const ratio       = parseFloat(item.dataset.aspect ?? '1');
+        item.style.width  = `${height * ratio}px`;
+        item.style.height = `${height}px`;
+      });
+    }
+
+    for (const item of visible) {
+      const ratio = parseFloat(item.dataset.aspect ?? '1');
+      row.push(item);
+      rowRatio += ratio;
+      const rowWidth = rowRatio * TARGET_HEIGHT + (row.length - 1) * GAP;
+      const overflows = rowWidth >= containerWidth;
+      if (row.length === MAX_PER_ROW || (overflows && row.length >= MIN_PER_ROW)) {
+        finalizeRow(row, false);
+        row = [];
+        rowRatio = 0;
+      }
+    }
+    if (row.length) finalizeRow(row, true);
+  }
+
+  // ─── Filter ────────────────────────────────────────────────────────────────
+  function applyFilter(filter: string) {
+    items.forEach(item => {
+      const cat  = item.dataset.category ?? '';
+      const show = filter === 'all' || cat === filter;
+      if (show) { delete item.dataset.hidden; }
+      else       { item.dataset.hidden = 'true'; }
+    });
+    buttons.forEach(btn => {
+      const active = btn.dataset.filter === filter;
+      btn.setAttribute('aria-pressed', String(active));
+      btn.classList.toggle('active', active);
+    });
+    layout();
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => applyFilter(btn.dataset.filter ?? 'all'));
+  });
+
+  // Resize
+  let resizeTimer: ReturnType<typeof setTimeout>;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(layout, 100);
+  });
+
+  // Set initial state
+  applyFilter('sold');
+
+  // ─── Lightbox ──────────────────────────────────────────────────────────────
+  const modal    = document.getElementById('galleryModal') as HTMLElement;
+  const backdrop = modal.querySelector('.modal-backdrop') as HTMLElement;
+  const closeBtn = modal.querySelector('.modal-close') as HTMLButtonElement;
+  const modalImg = modal.querySelector('.modal-img') as HTMLImageElement;
+  const modalTitle = modal.querySelector('.modal-title') as HTMLElement;
+  const modalMeta  = modal.querySelector('.modal-meta') as HTMLElement;
+
+  function openModal(btn: HTMLButtonElement) {
+    modalImg.src = btn.dataset.full ?? '';
+    modalImg.alt = btn.dataset.alt ?? '';
+    modalTitle.textContent = btn.dataset.title ?? '';
+
+    const parts: string[] = [];
+    if (btn.dataset.medium)     parts.push(btn.dataset.medium);
+    if (btn.dataset.dimensions) parts.push(btn.dataset.dimensions);
+    if (btn.dataset.price)      parts.push(`$${Number(btn.dataset.price).toLocaleString()}`);
+    modalMeta.textContent = parts.join('  ·  ');
+
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    document.body.style.overflow = '';
+    modalImg.src = '';
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.gallery-thumb-btn').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn));
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !modal.hidden) closeModal();
+  });
+</script>
+
+<style>
+  /* ── Filter bar ─────────────────────────────────────────────────────────── */
+  .gallery-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+
+  .filter-btn {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: #666;
+    padding: 6px 16px;
+    font-size: 0.85em;
+    font-family: var(--font-body);
+    font-weight: 200;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+
+  .filter-btn:hover,
+  .filter-btn.active {
+    background: var(--color-header-bg);
+    color: #fff;
+    border-color: var(--color-header-bg);
+  }
+
+  /* ── Justified grid ─────────────────────────────────────────────────────── */
+  .gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+
+  .gallery-item {
+    overflow: hidden;
+  }
+
+  .gallery-item[data-hidden] {
+    display: none;
+  }
+
+  .gallery-thumb-btn {
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .gallery-thumb-btn img {
+    display: block;
+    height: 100%;
+    width: 100%;
+    transition: opacity 0.2s;
+  }
+
+  .gallery-thumb-btn:hover img {
+    opacity: 0.85;
+  }
+
+  /* ── Modal ──────────────────────────────────────────────────────────────── */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal[hidden] { display: none; }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+  }
+
+  .modal-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: -36px;
+    right: 0;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2em;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    opacity: 0.7;
+  }
+
+  .modal-close:hover { opacity: 1; }
+
+  .modal-img {
+    max-width: 90vw;
+    max-height: 78vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .modal-caption {
+    margin-top: 12px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .modal-title {
+    font-size: 1em;
+    font-weight: 300;
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+  }
+
+  .modal-meta {
+    font-size: 0.8em;
+    color: #aaa;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* widths/heights are set by JS layout */
+</style>

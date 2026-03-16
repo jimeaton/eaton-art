@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<Layout title="Message Sent — Kathleen Eaton">
+  <Header currentPath="/order-info/" />
+
+  <div id="main">
+    <div class="wrap">
+      <div class="middle clearfix">
+
+        <main id="content">
+          <div class="post page">
+            <h1>Message Sent</h1>
+            <p>Thank you for your inquiry. Kathleen will be in touch shortly.</p>
+            <p><a href="/">Return to home page</a></p>
+          </div>
+        </main>
+
+        <Sidebar />
+
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</Layout>

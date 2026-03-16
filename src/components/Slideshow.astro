@@ -1,0 +1,69 @@
+---
+interface Slide {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  slides: Slide[];
+}
+
+const { slides } = Astro.props;
+---
+
+<div id="heroSlideshow" aria-label="Featured paintings slideshow">
+  {slides.map((slide, i) => (
+    <div class={`slide${i === 0 ? ' active' : ''}`}>
+      <img src={slide.src} alt={slide.alt} loading={i === 0 ? 'eager' : 'lazy'}>
+    </div>
+  ))}
+  <div class="slideshow-dots" role="tablist" aria-label="Slideshow controls">
+    {slides.map((_, i) => (
+      <button
+        role="tab"
+        aria-selected={i === 0 ? 'true' : 'false'}
+        aria-label={`Slide ${i + 1}`}
+        class={i === 0 ? 'active' : ''}
+        data-index={i}
+      />
+    ))}
+  </div>
+</div>
+
+<script>
+  const slideshow = document.getElementById('heroSlideshow')!;
+  const slides    = slideshow.querySelectorAll<HTMLElement>('.slide');
+  const dots      = slideshow.querySelectorAll<HTMLButtonElement>('.slideshow-dots button');
+  let current     = 0;
+  let timer: ReturnType<typeof setInterval>;
+
+  function goTo(index: number) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    dots[current].setAttribute('aria-selected', 'false');
+
+    current = index;
+
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    dots[current].setAttribute('aria-selected', 'true');
+  }
+
+  function next() {
+    goTo((current + 1) % slides.length);
+  }
+
+  function startTimer() {
+    timer = setInterval(next, 5000);
+  }
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      clearInterval(timer);
+      goTo(Number(dot.dataset.index));
+      startTimer();
+    });
+  });
+
+  startTimer();
+</script>

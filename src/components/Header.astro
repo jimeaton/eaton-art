@@ -1,0 +1,43 @@
+---
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+const navItems = [
+  { label: 'About the Artist', href: '/' },
+  { label: 'Gallery',           href: '/gallery/' },
+  { label: 'Collections & Awards', href: '/collections-awards/' },
+  { label: 'Order Info',        href: '/order-info/' },
+];
+---
+
+<header id="header">
+  <div class="inside">
+    <div id="logo">
+      <h1><a href="/">Kathleen Eaton</a></h1>
+    </div>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="mainNav" aria-label="Main navigation">
+      <ul>
+        {navItems.map(item => (
+          <li class={currentPath === item.href ? 'current' : ''}>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector('.menu-toggle') as HTMLButtonElement;
+  const nav    = document.getElementById('mainNav') as HTMLElement;
+  toggle.addEventListener('click', () => {
+    const isOpen = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  });
+</script>

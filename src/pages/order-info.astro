@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<Layout title="Order Info — Kathleen Eaton">
+  <Header currentPath="/order-info/" />
+
+  <div id="main">
+    <div class="wrap">
+      <div class="middle clearfix">
+
+        <main id="content">
+          <div class="post page">
+            <h1>Order Info</h1>
+
+            <p>To inquire about purchasing a painting or commission, please use the form below. Include the title of the work you're interested in and any questions you have.</p>
+
+            <form class="order-form" name="order-inquiry" method="POST" data-netlify="true" action="/thank-you/">
+              <input type="hidden" name="form-name" value="order-inquiry" />
+
+              <div class="form-field">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required />
+              </div>
+
+              <div class="form-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required />
+              </div>
+
+              <div class="form-field">
+                <label for="painting">Painting Title</label>
+                <input type="text" id="painting" name="painting" placeholder="e.g. Blue Line at Damen" />
+              </div>
+
+              <div class="form-field">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="6" required></textarea>
+              </div>
+
+              <button type="submit" class="submit-btn">Send Inquiry</button>
+            </form>
+          </div>
+        </main>
+
+        <Sidebar />
+
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</Layout>
+
+<style>
+  .order-form {
+    margin-top: 30px;
+    max-width: 520px;
+  }
+
+  .form-field {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-field label {
+    font-size: 0.75em;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #333;
+  }
+
+  .form-field input,
+  .form-field textarea {
+    font-family: var(--font-body);
+    font-size: 1em;
+    font-weight: 300;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    padding: 10px 12px;
+    background: #fff;
+    width: 100%;
+  }
+
+  .form-field input:focus,
+  .form-field textarea:focus {
+    outline: none;
+    border-color: #999;
+  }
+
+  .form-field textarea {
+    resize: vertical;
+  }
+
+  .submit-btn {
+    background: var(--color-header-bg);
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    font-family: var(--font-body);
+    font-size: 0.8em;
+    font-weight: 200;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .submit-btn:hover {
+    background: #555;
+  }
+</style>

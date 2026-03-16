@@ -1,0 +1,19 @@
+---
+import { sanityClient } from '../lib/sanity';
+import { ptToHtml } from '../lib/portableText';
+
+const settings = await sanityClient.fetch(
+  `*[_type == "siteSettings"][0]{ sidebar }`
+);
+
+const sidebarHtml = settings?.sidebar ? ptToHtml(settings.sidebar) : '';
+---
+
+<aside id="sidebar">
+  <div class="side">
+    {sidebarHtml
+      ? <Fragment set:html={sidebarHtml} />
+      : null
+    }
+  </div>
+</aside>

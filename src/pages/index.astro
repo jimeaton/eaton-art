@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Slideshow from '../components/Slideshow.astro';
+import Sidebar from '../components/Sidebar.astro';
+import { sanityClient } from '../lib/sanity';
+import { ptToHtml } from '../lib/portableText';
+import imageUrlBuilder from '@sanity/image-url';
+
+const about = await sanityClient.fetch(
+  `*[_type == "aboutPage"][0]{ heroSlides[]{ asset, alt }, introHeading, bio }`
+);
+
+const builder = imageUrlBuilder(sanityClient);
+
+const slides = about?.heroSlides?.length
+  ? about.heroSlides.map((s: any) => ({
+      src: builder.image(s.asset).width(1200).auto('format').url(),
+      alt: s.alt ?? 'Painting by Kathleen Eaton',
+    }))
+  : [
+      { src: '/images/ke-slide-1.webp', alt: 'Painting by Kathleen Eaton' },
+      { src: '/images/ke-slide-2.webp', alt: 'Painting by Kathleen Eaton' },
+      { src: '/images/ke-slide-3.webp', alt: 'Painting by Kathleen Eaton' },
+      { src: '/images/ke-slide-4.jpg',  alt: 'Painting by Kathleen Eaton' },
+    ];
+
+const introHeading = about?.introHeading ?? 'Kathleen Eaton is a Chicago area artist whose work is an interpretation of city and suburban life.';
+const bioHtml = about?.bio ? ptToHtml(about.bio) : '';
+---
+
+<Layout title="Kathleen Eaton — Artist">
+  <Header currentPath="/" />
+
+  <Slideshow slides={slides} />
+
+  <div id="main">
+    <div class="wrap">
+      <div class="middle clearfix">
+
+        <main id="content">
+          <div class="post page">
+            <h2>{introHeading}</h2>
+            {bioHtml
+              ? <Fragment set:html={bioHtml} />
+              : (
+                <p>Her work reflects a fascination with architectural spaces and the unexpected solitude or human activities that occur in them.</p>
+                <p>The artist's paintings are begun with an idea of a place, real or imaginary, then proceed by a series of sketches to a full-sized drawing, and the final oil painting is done from this. The technique she uses involves building up areas of color through the application of thin layers of transparent paint.</p>
+                <p>Eaton's painted edition work is a combination of stencil and oil painting techniques. A color compositional study is first done to get an idea of how the final picture will look. Next, the basic color and pattern areas are developed using the serigraphic stencil process to apply oil paint onto hardboard panel. Each color requires a separate stencil. After each stencil layer hand painting is done to achieve tonal variations and details. Typically over 150 different stencils are used. These mixed technique pieces are done in small editions, 50 or less, and numbered sequentially as finished.</p>
+                <p>Over the past 30 years her work has been featured in 1-person and group shows. In addition, her paintings and editions have been acquired nationally for public, corporate, and private collections.</p>
+                <p>Kathleen Eaton's studio is located 35 miles northwest of Chicago. She continually has new works in progress and will schedule studio visits for interested parties.</p>
+              )
+            }
+          </div>
+        </main>
+
+        <Sidebar />
+
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</Layout>

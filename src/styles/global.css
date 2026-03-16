@@ -1,0 +1,516 @@
+/*
+  Eaton Studios — Kathleen Eaton Portfolio
+  Adapted from Hardy Theme by Theme Trust
+  ==========================================
+  00 - Variables
+  01 - Reset
+  02 - Global
+  03 - Layout
+  04 - Header & Nav
+  05 - Hero Slideshow
+  06 - Content & Sidebar
+  07 - Footer
+  08 - Media Queries
+*/
+
+/* =====================================================
+   00 - Variables
+   ===================================================== */
+
+:root {
+  --color-text:          #000000;
+  --color-heading:       #333333;
+  --color-link:          #dd4477;
+  --color-link-hover:    #bb2255;
+  --color-bg-outer:      #e7e7e8;
+  --color-bg-white:      #ffffff;
+  --color-bg-footer:     #e7e7e7;
+  --color-border:        #cccccc;
+  --color-header-bg:     #333333;
+  --color-nav-link:      #999999;
+  --color-nav-active:    #ffffff;
+  --color-nav-hover:     #cccccc;
+  --font-body:           -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --max-width:           62.5em;
+}
+
+/* =====================================================
+   01 - Reset
+   ===================================================== */
+
+html, body, div, span, article, aside, canvas, details, figcaption,
+figure, footer, header, hgroup, menu, nav, section, summary,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, img, abbr,
+address, code, del, em, ins, mark, small, strong, sub, sup,
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-y: scroll;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after { box-sizing: inherit; }
+
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary, img {
+  display: block;
+}
+
+ol, ul { list-style: none; }
+blockquote, q { quotes: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+strong { font-weight: bold; }
+em     { font-style: italic; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+/* =====================================================
+   02 - Global
+   ===================================================== */
+
+body {
+  font-size: 100%;
+  font-family: var(--font-body);
+  font-weight: 300;
+  color: var(--color-text);
+  background-color: var(--color-bg-outer);
+  margin: 0;
+}
+
+p {
+  line-height: 1.4em;
+  font-size: 1.2em;
+  margin: 0 0 20px 0;
+  font-weight: 200;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  outline: none;
+}
+
+a:hover { color: var(--color-link-hover); }
+a img   { border: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 15px 0;
+  color: var(--color-heading);
+  font-family: var(--font-body);
+  font-weight: 300;
+}
+
+h1 { font-size: 2.0em; }
+h2 { font-size: 2.3em; font-weight: 300; color: var(--color-link); margin-bottom: 20px; }
+h3 { font-size: 1.5em; }
+h4 { font-size: 1.4em; font-weight: 500; margin: 0 0 20px 0; line-height: 1.5; }
+h5 {
+  font-size: 0.7em;
+  margin-bottom: 20px;
+  font-weight: 900;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  margin: 20px 0 35px 0;
+}
+
+.hidden { display: none; }
+
+.clearfix::before, .clearfix::after { content: ""; display: table; }
+.clearfix::after { clear: both; }
+.clearboth { clear: both; display: block; font-size: 0; height: 0; line-height: 0; width: 100%; }
+
+/* =====================================================
+   03 - Layout
+   ===================================================== */
+
+#container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.wrap {
+  background: var(--color-bg-white);
+  padding-top: 1px;
+}
+
+#main {
+  margin: 0 auto;
+  background: var(--color-bg-white);
+}
+
+#main .wrap {
+  padding: 0 30px;
+}
+
+.middle {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+#content {
+  float: left;
+  width: 68%;
+  margin: 0 0 40px 0;
+  padding: 0;
+  position: relative;
+}
+
+#content h2 { font-size: 2.3em; }
+
+#sidebar {
+  float: right;
+  width: 26.5%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Sidebar inner border/padding */
+.side {
+  padding-left: 40px;
+  border-left: 1px solid var(--color-border);
+}
+
+.side p {
+  margin-bottom: 0.7em;
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+.side img {
+  margin-bottom: 15px;
+  max-width: 135px;
+}
+
+/* =====================================================
+   04 - Header & Nav
+   ===================================================== */
+
+#header {
+  width: 100%;
+  background: var(--color-header-bg);
+  position: relative;
+  padding: 0 30px;
+}
+
+#header .inside {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 20px 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+}
+
+#logo {
+  flex: 0 0 auto;
+}
+
+#logo h1 {
+  margin: 0;
+  line-height: 1em;
+  font-size: 2.5em;
+  font-weight: 200;
+  color: #ffffff;
+}
+
+#logo h1 a,
+#logo h1 a:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+#mainNav {
+  margin-left: auto;
+}
+
+#mainNav ul {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 30px;
+}
+
+#mainNav ul li {
+  margin: 0;
+  padding: 0;
+}
+
+#mainNav ul a {
+  color: var(--color-nav-link);
+  font-size: 1.1em;
+  font-weight: 200;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 25px;
+}
+
+#mainNav ul a:hover,
+#mainNav ul li.current a {
+  color: var(--color-nav-active);
+  text-decoration: none;
+}
+
+/* Mobile menu toggle */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: auto;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #aaa;
+  margin: 5px 0;
+  transition: 0.3s;
+}
+
+/* =====================================================
+   05 - Hero Slideshow
+   ===================================================== */
+
+#heroSlideshow {
+  position: relative;
+  width: 100%;
+  /* Maintain 1000:572 ratio */
+  padding-bottom: 57.2%;
+  overflow: hidden;
+  background: #222;
+}
+
+#heroSlideshow .slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+#heroSlideshow .slide.active {
+  opacity: 1;
+}
+
+#heroSlideshow .slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Dot indicators */
+.slideshow-dots {
+  position: absolute;
+  bottom: 15px;
+  right: 3%;
+  display: flex;
+  gap: 5px;
+  z-index: 10;
+}
+
+.slideshow-dots button {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s;
+}
+
+.slideshow-dots button.active,
+.slideshow-dots button:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* =====================================================
+   06 - Content & Sidebar
+   ===================================================== */
+
+#content ul {
+  margin: 0 0 25px 20px;
+  list-style-type: disc;
+}
+
+#content ul li {
+  margin: 0 0 10px 0;
+  font-size: 0.85em;
+  line-height: 1.4em;
+}
+
+#content ol {
+  margin: 0 0 20px 20px;
+  list-style-type: decimal;
+}
+
+#content ol li {
+  margin: 0 0 10px 0;
+  line-height: 1.4em;
+}
+
+/* =====================================================
+   07 - Footer
+   ===================================================== */
+
+#footer {
+  background: var(--color-bg-footer);
+  width: 100%;
+}
+
+#footer .inside {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0;
+}
+
+#footer .main {
+  padding: 50px 0 10px 0;
+  display: flex;
+  gap: 40px;
+}
+
+.footerBox {
+  min-width: 150px;
+  margin-left: -45px;
+  margin-bottom: 50px;
+}
+
+#footer .widgetBox h3 {
+  color: #999;
+  font-size: 1.5em;
+  font-weight: 200;
+  margin-bottom: 10px;
+}
+
+#footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#footer ul li {
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+#footer a {
+  color: #6a6a6a;
+  font-weight: 200;
+  line-height: 1.5em;
+}
+
+#footer a:hover { color: #47474b; }
+
+#footer .secondary {
+  margin: 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+#footer .secondary p {
+  font-size: 0.9em;
+  margin: 0;
+}
+
+#footer .secondary .left  { float: left; }
+#footer .secondary .right { float: right; }
+
+/* =====================================================
+   08 - Media Queries
+   ===================================================== */
+
+@media only screen and (max-width: 975px) {
+  #mainNav ul { gap: 18px; }
+  #mainNav ul a { font-size: 1em; }
+}
+
+@media only screen and (max-width: 870px) {
+  .menu-toggle { display: flex; flex-direction: column; }
+
+  #mainNav {
+    display: none;
+    width: 100%;
+    background: #222;
+    padding: 15px 20px 20px;
+    margin-top: 10px;
+  }
+
+  #mainNav.open { display: block; }
+
+  #header .inside { flex-wrap: wrap; }
+
+  #mainNav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  #mainNav ul li {
+    width: 100%;
+    border-bottom: 1px solid #444;
+    padding: 8px 0;
+  }
+
+  #mainNav ul li:last-child { border-bottom: none; }
+  #mainNav ul a { font-size: 0.95em; }
+}
+
+@media only screen and (max-width: 768px) {
+  #content {
+    width: 100%;
+    float: none;
+  }
+
+  #sidebar {
+    float: none;
+    width: 100%;
+    padding: 30px 0;
+  }
+
+  .side {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    padding-top: 30px;
+  }
+
+  #footer .main { flex-direction: column; gap: 0; }
+}
+
+@media only screen and (max-width: 480px) {
+  h2 { font-size: 1.6em; }
+  p  { font-size: 1em; }
+
+  #logo h1 { font-size: 1.8em; }
+  #main .wrap { padding: 0 15px; }
+
+  #footer .secondary .left,
+  #footer .secondary .right { float: none; }
+}
