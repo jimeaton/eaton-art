@@ -18,7 +18,7 @@ export const richTextBlock = {
             name: 'newTab',
             type: 'boolean',
             title: 'Open in new tab',
-            initialValue: true,
+            initialValue: false,
           },
         ],
       },
