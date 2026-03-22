@@ -11,14 +11,8 @@ export default defineType({
       type: 'string',
     }),
     defineField({
-      name: 'columnLeft',
-      title: 'Left Column',
-      type: 'array',
-      of: [{ type: 'block' }],
-    }),
-    defineField({
-      name: 'columnRight',
-      title: 'Right Column',
+      name: 'body',
+      title: 'Body',
       type: 'array',
       of: [{ type: 'block' }],
     }),

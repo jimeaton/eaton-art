@@ -7,12 +7,11 @@ import { sanityClient } from '../../lib/sanity';
 import { ptToHtml } from '../../lib/portableText';
 
 const page = await sanityClient.fetch(
-  `*[_type == "midwayMuralsPage"][0]{ heading, columnLeft, columnRight }`
+  `*[_type == "midwayMuralsPage"][0]{ heading, body }`
 );
 
-const heading  = page?.heading     ?? 'Midway Murals';
-const leftHtml = page?.columnLeft  ? ptToHtml(page.columnLeft)  : '';
-const rightHtml = page?.columnRight ? ptToHtml(page.columnRight) : '';
+const heading  = page?.heading ?? 'Midway Murals';
+const bodyHtml = page?.body    ? ptToHtml(page.body) : '';
 ---
 
 <Layout title="Midway Murals — Kathleen Eaton">
@@ -26,16 +25,11 @@ const rightHtml = page?.columnRight ? ptToHtml(page.columnRight) : '';
           <div class="post page">
             <h1>{heading}</h1>
 
-            <div class="collections-columns">
-              <div class="collections-col">
-                {leftHtml
-                  ? <Fragment set:html={leftHtml} />
-                  : <p>Content coming soon.</p>
-                }
-              </div>
-              <div class="collections-col">
-                {rightHtml && <Fragment set:html={rightHtml} />}
-              </div>
+            <div class="page-body">
+              {bodyHtml
+                ? <Fragment set:html={bodyHtml} />
+                : <p>Content coming soon.</p>
+              }
             </div>
           </div>
         </main>
@@ -50,21 +44,7 @@ const rightHtml = page?.columnRight ? ptToHtml(page.columnRight) : '';
 </Layout>
 
 <style>
-  .collections-columns {
-    display: flex;
-    gap: 40px;
+  .page-body {
     margin-top: 20px;
-  }
-
-  .collections-col {
-    flex: 1;
-    min-width: 0;
-  }
-
-  @media (max-width: 600px) {
-    .collections-columns {
-      flex-direction: column;
-      gap: 0;
-    }
   }
 </style>
