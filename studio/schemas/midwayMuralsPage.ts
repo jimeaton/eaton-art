@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import { richTextBlock } from './richTextBlock';
 
 export default defineType({
   name: 'midwayMuralsPage',
@@ -14,7 +15,17 @@ export default defineType({
       name: 'body',
       title: 'Body',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [
+        richTextBlock,
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            { name: 'alt', type: 'string', title: 'Alt text' },
+            { name: 'maxWidth', type: 'number', title: 'Max width (px)', description: 'Leave blank for full width' },
+          ],
+        },
+      ],
     }),
   ],
   preview: {

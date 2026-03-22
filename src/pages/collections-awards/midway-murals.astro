@@ -7,7 +7,7 @@ import { sanityClient } from '../../lib/sanity';
 import { ptToHtml } from '../../lib/portableText';
 
 const page = await sanityClient.fetch(
-  `*[_type == "midwayMuralsPage"][0]{ heading, body }`
+  `*[_type == "midwayMuralsPage"][0]{ heading, body[]{ ..., asset-> } }`
 );
 
 const heading  = page?.heading ?? 'Midway Murals';

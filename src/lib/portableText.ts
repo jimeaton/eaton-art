@@ -9,8 +9,11 @@ export function ptToHtml(blocks: any[]): string {
   return toHTML(blocks, {
     components: {
       marks: {
-        link: ({ children, value }: any) =>
-          `<a href="${value.href}" target="_blank" rel="noopener noreferrer">${children}</a>`,
+        link: ({ children, value }: any) => {
+          const newTab = value.newTab !== false;
+          const target = newTab ? ' target="_blank" rel="noopener noreferrer"' : '';
+          return `<a href="${value.href}"${target}>${children}</a>`;
+        },
       },
       types: {
         // Images embedded in Portable Text (used in siteSettings sidebar)
