@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "createdAt": "2026-03-16T02:06:10.858Z",
+  "createdAt": "2026-03-22T16:34:05.076Z",
   "workspaces": [
     {
       "name": "eatonart",
@@ -12,7 +12,7 @@
       "mediaLibrary": {
         "enabled": false
       },
-      "schema": "4da2ca9f.create-schema.json",
+      "schema": "e774453d.create-schema.json",
       "tools": "1041128a.create-tools.json"
     }
   ]

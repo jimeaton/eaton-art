@@ -3,7 +3,7 @@ import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { schemaTypes } from './schemas';
 
-const singletonTypes = new Set(['aboutPage', 'collectionsPage', 'siteSettings']);
+const singletonTypes = new Set(['aboutPage', 'collectionsPage', 'midwayMuralsPage', 'siteSettings']);
 const singletonActions = new Set(['publish', 'discardChanges', 'restore']);
 
 export default defineConfig({
@@ -35,6 +35,14 @@ export default defineConfig({
                 S.document()
                   .schemaType('collectionsPage')
                   .documentId('collectionsPage')
+              ),
+            S.listItem()
+              .title('Midway Murals')
+              .id('midwayMuralsPage')
+              .child(
+                S.document()
+                  .schemaType('midwayMuralsPage')
+                  .documentId('midwayMuralsPage')
               ),
             S.divider(),
             S.listItem()
